@@ -51,7 +51,8 @@
       <p class="muted pointer-only">or paste or drop an image here</p>
       <ul class="privacy">
         <li>Your image never leaves this device. There is no server.</li>
-        <li>Nothing is saved. Leaving or closing the page wipes everything.</li>
+        <li>Nothing is saved to your device until you choose to save or share the edited image.</li>
+        <li>Leaving or closing the page wipes everything else.</li>
         <li>Exported images have metadata such as location removed.</li>
       </ul>
     </section>
@@ -106,7 +107,7 @@
 
   <dialog id="exportDialog" class="sheet">
     <h2>Export</h2>
-    <p class="muted">Creates a flattened PNG. Covered pixels are permanently replaced and metadata is removed.</p>
+    <p class="muted">Creates a flattened PNG. Covered pixels are permanently replaced and metadata is removed. This is the only time EzRedact writes anything to your device, and only the redacted image.</p>
     <div class="sheet-actions">
       <button id="shareBtn" class="btn primary large" type="button" hidden>Share…</button>
       <button id="saveBtn" class="btn large" type="button">Save to device</button>
