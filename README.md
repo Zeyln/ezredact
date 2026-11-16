@@ -13,7 +13,7 @@ Open an image, cover what you need to hide, then share or save the result. EzRed
 - **No backend.** The app is static HTML, CSS and JavaScript served by GitHub Pages. A Content Security Policy blocks every network request except loading the app's own files, so an image cannot be uploaded even by accident.
 - **Memory only.** The image and your edits live in in-memory canvases. EzRedact does not use cookies, `localStorage`, IndexedDB, the Cache API or a service worker.
 - **You decide what gets saved.** The only thing EzRedact ever writes to your device is the redacted image, and only when you tap **Save**, **Share** or **Copy**. The original image and your edit history are never saved.
-- **Wiped on exit.** Leaving, reloading or closing the page wipes the image, the edit history and any temporary download links. The **Clear** button does the same at any time.
+- **Cleared when you leave.** As soon as the page goes to the background (switching app or tab, going to the home screen, locking the screen) or is closed or reloaded, the image, the edit history and any temporary download links are cleared. Export first if you want to keep the result. The **Clear** button does the same at any time.
 - **Clean exports.** Exports are re-encoded PNGs. Redacted pixels are permanently replaced, and metadata such as EXIF location and camera details is not carried over.
 - **Privacy shield.** The screen is covered whenever the page loses focus or goes to the background, so app-switcher previews and tab thumbnails are less likely to show your image.
 - **No third-party code.** There are no dependencies, frameworks or CDNs. Everything that runs is in [`site/`](site/).
@@ -30,7 +30,7 @@ EzRedact controls what the web page does, not what your phone or browser does ar
 - **Swap.** Some Android phones (for example Samsung "RAM Plus") can move memory to storage when RAM runs low.
 - **Browser caching of the app itself.** Browsers cache EzRedact's own files (HTML, script, icons). Your images are never fetched from the network, so they never enter that cache.
 
-When you're done, close EzRedact from the app switcher.
+When you're done, also close EzRedact from the app switcher so the browser drops its preview of the page.
 
 ## Tools
 
@@ -65,7 +65,7 @@ Exported files are always named `image.png` (your device adds "(1)" and so on if
 - **iPhone/iPad (Safari):** Share → Add to Home Screen.
 - **Android (Chrome):** ⋮ menu → Add to Home screen.
 
-It then opens full-screen like an app. Closing it wipes everything, just as in the browser.
+It then opens full-screen like an app. Switching away from it or closing it clears everything, just as in the browser.
 
 ## Development
 

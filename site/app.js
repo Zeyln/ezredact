@@ -5,7 +5,7 @@
  * Everything lives in memory: the original image, the edit list and the
  * composited result are plain canvases held in variables. Nothing is written
  * to storage and nothing is sent over the network. wipe() releases it all and
- * runs automatically when the page is hidden for good (pagehide).
+ * runs automatically whenever the page is sent to the background.
  */
 (() => {
   // iOS Safari refuses canvases above ~16.7 megapixels.
@@ -542,8 +542,15 @@
   });
 
   // ---- Export ----
+  // Call this synchronously in the tap handler: toBlob() snapshots the canvas
+  // immediately, so the export still completes if the page is sent to the
+  // background (and cleared) while a save dialog or share target is open.
   function exportBlob() {
     return new Promise((resolve, reject) => {
+      if (!work) {
+        reject(new Error('no image'));
+        return;
+      }
       work.toBlob((b) => (b ? resolve(b) : reject(new Error('encode failed'))), 'image/png');
     });
   }
@@ -614,6 +621,8 @@
   });
 
   el.saveBtn.addEventListener('click', async () => {
+    const blobPromise = exportBlob(); // snapshot now, before the dialog can background the page
+    blobPromise.catch(() => {});
     let handle;
     try {
       // Open the dialog first, while the tap still counts as a user gesture.
@@ -628,7 +637,7 @@
       return;
     }
     try {
-      const blob = await exportBlob();
+      const blob = await blobPromise;
       const writable = await handle.createWritable();
       await writable.write(blob);
       await writable.close();
@@ -739,14 +748,19 @@
   window.addEventListener('blur', shield);
   window.addEventListener('focus', unshield);
   document.addEventListener('visibilitychange', () => {
-    if (document.visibilityState === 'hidden') shield();
-    else unshield();
+    if (document.visibilityState === 'hidden') {
+      // Sent to the background (app switch, home screen, tab switch, screen lock): clear everything.
+      shield();
+      wipe();
+    } else {
+      unshield();
+    }
   });
   window.addEventListener('pageshow', unshield);
   // Losing focus right after a tap (file picker, share sheet, confirm) is expected; the shield lifts on return.
   el.stage.addEventListener('pointerdown', unshield);
 
-  // ---- Leaving the page wipes everything ----
+  // ---- Fallback: leaving the page also clears (normally already done on hidden) ----
   window.addEventListener('pagehide', () => {
     shield();
     wipe();
