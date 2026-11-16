@@ -7,8 +7,9 @@
   --muted: #9aa1ad;
   --accent: #ffcc33;
   --accent-text: #15171c;
-  --danger: #ff6b6b;
   --radius: 12px;
+  --tap: 44px; /* minimum touch target */
+  --toast-bottom: calc(176px + env(safe-area-inset-bottom));
   color-scheme: dark;
 }
 
@@ -20,10 +21,19 @@
 
 html, body { height: 100%; }
 
+/*
+ * Layout
+ * Portrait / narrow: header on top, image in the middle, tools along the bottom.
+ * Landscape phones and wide screens: tools move into a side panel so the image
+ * keeps as much height as possible (see the media query further down).
+ */
 body {
   margin: 0;
   display: grid;
-  grid-template-rows: auto 1fr auto;
+  grid-template-columns: minmax(0, 1fr);
+  grid-template-rows: auto minmax(0, 1fr) auto;
+  grid-template-areas: "top" "stage" "tools";
+  width: 100%;
   height: 100vh;
   height: 100dvh;
   overflow: hidden;
@@ -32,6 +42,7 @@ body {
   font: 15px/1.45 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
   -webkit-tap-highlight-color: transparent;
   -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
 }
 
 button { font: inherit; color: inherit; }
@@ -48,12 +59,14 @@ svg {
 }
 svg .fill { fill: currentColor; stroke: none; }
 
-/* Top bar */
+/* ---- Header ---- */
 .topbar {
+  grid-area: top;
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 8px;
+  min-width: 0;
   padding: 8px 12px;
   padding-top: max(8px, env(safe-area-inset-top));
   padding-left: max(12px, env(safe-area-inset-left));
@@ -61,9 +74,11 @@ svg .fill { fill: currentColor; stroke: none; }
   background: var(--surface);
   border-bottom: 1px solid var(--border);
 }
-.brand { display: flex; align-items: center; gap: 8px; font-weight: 700; font-size: 17px; min-width: 0; }
-.brand img { border-radius: 7px; }
+.brand { display: flex; align-items: center; gap: 8px; min-width: 0; font-weight: 700; font-size: 17px; }
+.brand img { flex: none; border-radius: 7px; }
+.brand-name { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .badge {
+  flex: none;
   padding: 1px 6px;
   border: 1px solid var(--accent);
   border-radius: 6px;
@@ -73,18 +88,20 @@ svg .fill { fill: currentColor; stroke: none; }
   text-transform: uppercase;
   letter-spacing: 0.04em;
 }
-.actions { display: flex; gap: 6px; }
+.actions { display: flex; flex: none; gap: 6px; }
 
 .btn {
   display: inline-flex;
   align-items: center;
   justify-content: center;
   gap: 6px;
-  min-height: 40px;
+  min-width: var(--tap);
+  min-height: var(--tap);
   padding: 0 12px;
   border: 1px solid var(--border);
   border-radius: 10px;
   background: var(--surface-2);
+  white-space: nowrap;
   cursor: pointer;
   touch-action: manipulation;
 }
@@ -93,20 +110,25 @@ svg .fill { fill: currentColor; stroke: none; }
 .btn.ghost { background: transparent; }
 .btn.large { min-height: 48px; padding: 0 20px; font-size: 16px; }
 .btn:disabled, .icon-btn:disabled { opacity: 0.4; cursor: default; }
-:is(.btn, .icon-btn, .tool, .swatch):focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+:is(.btn, .icon-btn, .tool, .swatch, summary):focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
 
-@media (max-width: 380px) {
-  .brand span { display: none; }
-  .btn { padding: 0 10px; }
+/* Phones: Open and Wipe become icon buttons; Export keeps its label. */
+@media (max-width: 560px) {
+  .actions .btn:not(.primary) { padding: 0; }
+  .actions .btn:not(.primary) .btn-label { display: none; }
+}
+@media (max-width: 420px) {
+  .brand-name { display: none; }
 }
 
-/* Stage */
+/* ---- Image area ---- */
 .stage {
+  grid-area: stage;
   position: relative;
+  min-width: 0;
   min-height: 0;
   overflow: hidden;
-  background:
-    repeating-conic-gradient(#191c22 0% 25%, #15171c 0% 50%) 0 0 / 24px 24px;
+  background: repeating-conic-gradient(#191c22 0% 25%, #15171c 0% 50%) 0 0 / 24px 24px;
 }
 
 #canvas {
@@ -122,26 +144,34 @@ svg .fill { fill: currentColor; stroke: none; }
 }
 #canvas[data-tool="move"] { cursor: grab; }
 
+/* Start screen: scrolls when it doesn't fit; centered (via margin:auto) when it does. */
 .empty {
-  height: 100%;
+  position: absolute;
+  inset: 0;
+  display: flex;
   overflow-y: auto;
+  overscroll-behavior: contain;
+  padding: 24px max(16px, env(safe-area-inset-right)) max(24px, env(safe-area-inset-bottom)) max(16px, env(safe-area-inset-left));
+  background: var(--bg);
+}
+.empty-inner {
+  margin: auto;
+  width: 100%;
+  max-width: 420px;
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
   gap: 12px;
-  padding: 24px 16px;
   text-align: center;
-  background: var(--bg);
 }
-.empty h1 { margin: 0; font-size: 24px; }
-.empty p { margin: 0; max-width: 34ch; }
+.empty h1 { margin: 0; font-size: clamp(21px, 6vw, 28px); line-height: 1.2; }
+.empty p { margin: 0; }
 .muted { color: var(--muted); }
 .privacy {
   list-style: none;
-  margin: 16px 0 0;
+  width: 100%;
+  margin: 12px 0 0;
   padding: 16px;
-  max-width: 380px;
   text-align: left;
   border: 1px solid var(--border);
   border-radius: var(--radius);
@@ -153,20 +183,194 @@ svg .fill { fill: currentColor; stroke: none; }
 .privacy li + li { margin-top: 8px; }
 .privacy li::before { content: "✓"; position: absolute; left: 0; color: var(--accent); font-weight: 700; }
 
-.limits {
-  max-width: 380px;
-  text-align: left;
-  color: var(--muted);
-  font-size: 13px;
-}
-.limits summary { cursor: pointer; color: var(--text); font-size: 14px; padding: 4px 0; }
-.limits p { margin: 8px 0; max-width: none; }
+.limits { width: 100%; text-align: left; color: var(--muted); font-size: 13px; }
+.limits summary { min-height: var(--tap); display: flex; align-items: center; justify-content: center; gap: 6px; cursor: pointer; color: var(--text); font-size: 14px; }
+.limits p { margin: 8px 0; }
 .limits ul { margin: 0; padding-left: 18px; }
 .limits li + li { margin-top: 4px; }
 
 @media (pointer: coarse) { .pointer-only { display: none; } }
 
-/* Privacy shield: no transitions, it must cover the image on the very next frame. */
+.drop-overlay {
+  position: absolute;
+  inset: 12px;
+  display: grid;
+  place-items: center;
+  border: 2px dashed var(--accent);
+  border-radius: var(--radius);
+  background: rgba(17, 19, 24, 0.85);
+  font-size: 18px;
+  font-weight: 600;
+  pointer-events: none;
+}
+
+/* ---- Tools ---- */
+.toolbar {
+  grid-area: tools;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  min-width: 0;
+  padding: 8px 12px;
+  padding-bottom: max(10px, env(safe-area-inset-bottom));
+  padding-left: max(12px, env(safe-area-inset-left));
+  padding-right: max(12px, env(safe-area-inset-right));
+  background: var(--surface);
+  border-top: 1px solid var(--border);
+}
+/* On tablets in portrait, keep the controls a comfortable width instead of stretching. */
+.toolbar > * { width: 100%; max-width: 640px; margin-inline: auto; }
+
+.hint {
+  margin-block: 0;
+  color: var(--muted);
+  font-size: 13px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.hint.warn { color: var(--accent); }
+
+.options { display: flex; align-items: center; gap: 8px; min-width: 0; }
+.row { display: flex; align-items: center; gap: 6px; min-width: 0; }
+.size { flex: 1; color: var(--muted); font-size: 14px; }
+.size input { flex: 1; min-width: 60px; height: var(--tap); margin: 0; accent-color: var(--accent); }
+.history { display: flex; flex: none; gap: 4px; margin-left: auto; }
+
+.icon-btn {
+  display: grid;
+  place-items: center;
+  width: var(--tap);
+  height: var(--tap);
+  padding: 0;
+  border: 0;
+  border-radius: 10px;
+  background: var(--surface-2);
+  cursor: pointer;
+  touch-action: manipulation;
+}
+
+.swatch {
+  display: grid;
+  place-items: center;
+  width: var(--tap);
+  height: var(--tap);
+  padding: 0;
+  border: 2px solid transparent;
+  border-radius: 50%;
+  background: none;
+  cursor: pointer;
+}
+.swatch[aria-checked="true"] { border-color: var(--accent); }
+.chip { width: 28px; height: 28px; border-radius: 50%; border: 1px solid var(--border); }
+.chip.black { background: #000; }
+.chip.white { background: #fff; }
+
+.tools { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 6px; }
+.tool {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+  min-width: 0;
+  min-height: 52px;
+  padding: 6px 2px;
+  border: 1px solid transparent;
+  border-radius: 10px;
+  background: var(--surface-2);
+  font-size: 12px;
+  cursor: pointer;
+  touch-action: manipulation;
+}
+.tool span { max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.tool[aria-checked="true"] { border-color: var(--accent); color: var(--accent); }
+
+/* Short portrait screens (e.g. iPhone SE): tighter toolbar, more room for the image. */
+@media (orientation: portrait) and (max-height: 700px) {
+  .toolbar { gap: 6px; padding-top: 6px; }
+  .tool { min-height: 46px; padding: 4px 2px; }
+}
+
+/*
+ * Side panel: phones in landscape and wide screens.
+ */
+@media (orientation: landscape) and (max-height: 600px), (min-width: 1000px) {
+  :root { --toast-bottom: calc(20px + env(safe-area-inset-bottom)); }
+
+  body {
+    grid-template-columns: minmax(0, 1fr) auto;
+    grid-template-rows: auto minmax(0, 1fr);
+    grid-template-areas: "top top" "stage tools";
+  }
+
+  .toolbar {
+    width: 260px;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    padding: 12px;
+    padding-right: max(12px, env(safe-area-inset-right));
+    padding-bottom: max(12px, env(safe-area-inset-bottom));
+    border-top: 0;
+    border-left: 1px solid var(--border);
+  }
+  .toolbar > * { max-width: none; margin-inline: 0; }
+
+  .tools { order: 1; grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .options { order: 2; flex-wrap: wrap; }
+  .size { flex-basis: 100%; }
+  .history { flex-basis: 100%; margin-left: 0; }
+  .history .icon-btn { flex: 1; }
+  .hint { order: 3; white-space: normal; }
+}
+
+/* Landscape phones: compact header and a narrower panel. */
+@media (orientation: landscape) and (max-height: 600px) {
+  .topbar { padding-top: max(4px, env(safe-area-inset-top)); padding-bottom: 4px; }
+  .topbar .btn { min-height: 38px; }
+  .toolbar { width: 188px; gap: 6px; padding: 8px; padding-right: max(8px, env(safe-area-inset-right)); }
+  .tool { min-height: 44px; padding: 4px 2px; }
+  .stage { margin-left: env(safe-area-inset-left); }
+}
+
+/* ---- Export sheet ---- */
+.sheet {
+  width: min(420px, calc(100vw - 32px));
+  max-height: calc(100dvh - 32px);
+  overflow-y: auto;
+  padding: 20px;
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  background: var(--surface);
+  color: var(--text);
+}
+.sheet::backdrop { background: rgba(0, 0, 0, 0.6); }
+.sheet h2 { margin: 0 0 6px; font-size: 19px; }
+.sheet p { margin: 0 0 16px; font-size: 14px; }
+.sheet-actions { display: flex; flex-direction: column; gap: 8px; }
+
+/* ---- Toast ---- */
+.toast {
+  position: fixed;
+  left: 50%;
+  bottom: var(--toast-bottom);
+  z-index: 10;
+  width: max-content;
+  max-width: calc(100vw - 32px);
+  padding: 10px 14px;
+  border-radius: 10px;
+  background: #000;
+  border: 1px solid var(--border);
+  font-size: 14px;
+  text-align: center;
+  opacity: 0;
+  transform: translate(-50%, 8px);
+  pointer-events: none;
+  transition: opacity 0.2s, transform 0.2s;
+}
+.toast.show { opacity: 1; transform: translate(-50%, 0); }
+
+/* ---- Privacy shield: no transitions, it must cover the image on the very next frame ---- */
 .shield {
   position: fixed;
   inset: 0;
@@ -184,114 +388,3 @@ svg .fill { fill: currentColor; stroke: none; }
 html.shielded .shield { display: flex; }
 html.shielded #canvas,
 html.shielded .sheet { visibility: hidden; }
-
-.drop-overlay {
-  position: absolute;
-  inset: 12px;
-  display: grid;
-  place-items: center;
-  border: 2px dashed var(--accent);
-  border-radius: var(--radius);
-  background: rgba(17, 19, 24, 0.85);
-  font-size: 18px;
-  font-weight: 600;
-  pointer-events: none;
-}
-
-/* Toolbar */
-.toolbar {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  padding: 8px 12px;
-  padding-bottom: max(10px, env(safe-area-inset-bottom));
-  padding-left: max(12px, env(safe-area-inset-left));
-  padding-right: max(12px, env(safe-area-inset-right));
-  background: var(--surface);
-  border-top: 1px solid var(--border);
-}
-/* Fixed two-line height so switching tools never resizes the stage. */
-.hint { margin: 0; color: var(--muted); font-size: 13px; height: 2.9em; overflow: hidden; }
-.hint.warn { color: var(--accent); }
-
-.options { display: flex; align-items: center; gap: 12px; min-height: 40px; }
-.row { display: flex; align-items: center; gap: 8px; }
-.size { flex: 1; min-width: 0; color: var(--muted); font-size: 14px; }
-.size input { flex: 1; min-width: 0; accent-color: var(--accent); }
-.history { display: flex; gap: 4px; margin-left: auto; }
-
-.icon-btn {
-  display: grid;
-  place-items: center;
-  width: 40px;
-  height: 40px;
-  border: 0;
-  border-radius: 10px;
-  background: var(--surface-2);
-  cursor: pointer;
-  touch-action: manipulation;
-}
-
-.swatch {
-  display: grid;
-  place-items: center;
-  width: 40px;
-  height: 40px;
-  padding: 0;
-  border: 2px solid transparent;
-  border-radius: 50%;
-  background: none;
-  cursor: pointer;
-}
-.swatch[aria-checked="true"] { border-color: var(--accent); }
-.chip { width: 26px; height: 26px; border-radius: 50%; border: 1px solid var(--border); }
-.chip.black { background: #000; }
-.chip.white { background: #fff; }
-
-.tools { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; }
-.tool {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 2px;
-  padding: 6px 4px;
-  border: 1px solid transparent;
-  border-radius: 10px;
-  background: var(--surface-2);
-  font-size: 12px;
-  cursor: pointer;
-  touch-action: manipulation;
-}
-.tool[aria-checked="true"] { border-color: var(--accent); color: var(--accent); }
-
-/* Export sheet */
-.sheet {
-  width: min(420px, calc(100vw - 32px));
-  padding: 20px;
-  border: 1px solid var(--border);
-  border-radius: 16px;
-  background: var(--surface);
-  color: var(--text);
-}
-.sheet::backdrop { background: rgba(0, 0, 0, 0.6); }
-.sheet h2 { margin: 0 0 6px; font-size: 19px; }
-.sheet p { margin: 0 0 16px; font-size: 14px; }
-.sheet-actions { display: flex; flex-direction: column; gap: 8px; }
-
-/* Toast */
-.toast {
-  position: fixed;
-  left: 50%;
-  bottom: calc(150px + env(safe-area-inset-bottom));
-  transform: translate(-50%, 8px);
-  max-width: calc(100vw - 32px);
-  padding: 10px 14px;
-  border-radius: 10px;
-  background: #000;
-  border: 1px solid var(--border);
-  font-size: 14px;
-  opacity: 0;
-  pointer-events: none;
-  transition: opacity 0.2s, transform 0.2s;
-}
-.toast.show { opacity: 1; transform: translate(-50%, 0); }

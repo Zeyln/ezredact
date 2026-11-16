@@ -42,10 +42,10 @@
   const colorButtons = [...document.querySelectorAll('[data-color]')];
 
   const HINTS = {
-    box: 'Drag to cover. Solid boxes are the safest way to hide text.',
-    pixelate: 'For faces and photos. Use Box for text: pixelated text can be recovered.',
-    brush: 'Paint over areas with a solid color.',
-    move: 'Drag to pan. Pinch or scroll to zoom.',
+    box: 'Drag to cover. Safest for text.',
+    pixelate: 'For faces. Use Box for text.',
+    brush: 'Paint over areas.',
+    move: 'Drag to pan. Pinch to zoom.',
   };
 
   // ---- State (memory only) ----
@@ -491,6 +491,15 @@
     if (userMovedView) requestRender();
     else fit();
   }).observe(el.stage);
+
+  // Re-render sharply when the pixel density changes (browser zoom, moving to another screen).
+  (function watchDpr() {
+    const mq = matchMedia(`(resolution: ${window.devicePixelRatio || 1}dppx)`);
+    mq.addEventListener('change', () => {
+      requestRender();
+      watchDpr();
+    }, { once: true });
+  })();
 
   // ---- Toolbar ----
   function setTool(t) {
