@@ -6,6 +6,8 @@ Open an image, cover what you need to hide, then share or save the result. EzRed
 
 **Use it:** https://zeyln.github.io/ezredact/
 
+> **Alpha test build (v0.1.0-alpha.1).** Not yet verified on real devices. Check every exported image before you share it, and report problems in [Issues](https://github.com/Zeyln/ezredact/issues).
+
 ## Privacy by design
 
 - **No backend.** The app is static HTML, CSS and JavaScript served by GitHub Pages. A Content Security Policy blocks every network request except loading the app's own files, so an image cannot be uploaded even by accident.
