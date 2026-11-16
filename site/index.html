@@ -51,10 +51,21 @@
       <p class="muted pointer-only">or paste or drop an image here</p>
       <ul class="privacy">
         <li>Your image never leaves this device. There is no server.</li>
-        <li>Nothing is saved to your device until you choose to save or share the edited image.</li>
+        <li>EzRedact saves nothing to your device until you choose to save or share the edited image.</li>
         <li>Leaving or closing the page wipes everything else.</li>
         <li>Exported images have metadata such as location removed.</li>
       </ul>
+      <details class="limits">
+        <summary>What your phone might still keep</summary>
+        <p>EzRedact can't control your phone or browser. They may keep:</p>
+        <ul>
+          <li>App switcher previews and tab thumbnails. EzRedact covers the screen when it goes to the background, but on iPhone the preview can be taken first.</li>
+          <li>A temporary copy of a photo you pick, made by the system photo picker.</li>
+          <li>Clipboard history and synced clipboards (if you use Copy).</li>
+          <li>On some Android phones, memory moved to storage when RAM runs low.</li>
+        </ul>
+        <p>To be safe, close EzRedact from the app switcher when you're done.</p>
+      </details>
     </section>
 
     <div id="dropOverlay" class="drop-overlay" hidden>Drop image to open</div>
@@ -107,7 +118,7 @@
 
   <dialog id="exportDialog" class="sheet">
     <h2>Export</h2>
-    <p class="muted">Creates a flattened PNG. Covered pixels are permanently replaced and metadata is removed. This is the only time EzRedact writes anything to your device, and only the redacted image.</p>
+    <p class="muted">Creates a flattened PNG. Covered pixels are permanently replaced and metadata is removed. This is the only time EzRedact itself writes anything to your device, and only the redacted image.</p>
     <div class="sheet-actions">
       <button id="shareBtn" class="btn primary large" type="button" hidden>Share…</button>
       <button id="saveBtn" class="btn large" type="button">Save to device</button>
@@ -117,5 +128,12 @@
   </dialog>
 
   <div id="toast" class="toast" role="status" aria-live="polite"></div>
+
+  <!-- Covers the screen whenever the page loses focus or goes to the background,
+       so app-switcher snapshots and tab thumbnails are less likely to show the image. -->
+  <div id="shield" class="shield" aria-hidden="true">
+    <img src="icons/icon.svg" alt="" width="64" height="64">
+    <p>Hidden for privacy</p>
+  </div>
 </body>
 </html>

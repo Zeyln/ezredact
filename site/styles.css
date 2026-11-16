@@ -143,7 +143,37 @@ svg .fill { fill: currentColor; stroke: none; }
 .privacy li + li { margin-top: 8px; }
 .privacy li::before { content: "✓"; position: absolute; left: 0; color: var(--accent); font-weight: 700; }
 
+.limits {
+  max-width: 380px;
+  text-align: left;
+  color: var(--muted);
+  font-size: 13px;
+}
+.limits summary { cursor: pointer; color: var(--text); font-size: 14px; padding: 4px 0; }
+.limits p { margin: 8px 0; max-width: none; }
+.limits ul { margin: 0; padding-left: 18px; }
+.limits li + li { margin-top: 4px; }
+
 @media (pointer: coarse) { .pointer-only { display: none; } }
+
+/* Privacy shield: no transitions, it must cover the image on the very next frame. */
+.shield {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  display: none;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  background: var(--bg);
+  color: var(--muted);
+  font-size: 15px;
+}
+.shield img { border-radius: 14px; }
+html.shielded .shield { display: flex; }
+html.shielded #canvas,
+html.shielded .sheet { visibility: hidden; }
 
 .drop-overlay {
   position: absolute;

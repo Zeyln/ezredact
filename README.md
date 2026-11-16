@@ -2,7 +2,7 @@
 
 Redact screenshots and images on your phone, privately.
 
-Open an image, cover what you need to hide, then share or save the result. EzRedact runs entirely in your browser: there is no server, no account and no analytics. Nothing is written to your device until you choose to save or share the edited image yourself.
+Open an image, cover what you need to hide, then share or save the result. EzRedact runs entirely in your browser: there is no server, no account and no analytics. EzRedact itself writes nothing to your device until you choose to save or share the edited image. Your phone or browser may still keep some traces; see [Limits](#limits).
 
 **Use it:** https://zeyln.github.io/ezredact/
 
@@ -13,7 +13,20 @@ Open an image, cover what you need to hide, then share or save the result. EzRed
 - **You decide what gets saved.** The only thing EzRedact ever writes to your device is the redacted image, and only when you tap **Save**, **Share** or **Copy**. The original image and your edit history are never saved.
 - **Wiped on exit.** Leaving, reloading or closing the page wipes the image, the edit history and any temporary download links. The **Wipe** button does the same at any time.
 - **Clean exports.** Exports are re-encoded PNGs. Redacted pixels are permanently replaced, and metadata such as EXIF location and camera details is not carried over.
+- **Privacy shield.** The screen is covered whenever the page loses focus or goes to the background, so app-switcher previews and tab thumbnails are less likely to show your image.
 - **No third-party code.** There are no dependencies, frameworks or CDNs. Everything that runs is in [`site/`](site/).
+
+## Limits
+
+EzRedact controls what the web page does, not what your phone or browser does around it. Outside the app's control:
+
+- **App switcher previews and tab thumbnails.** iOS and Android save a screenshot of the screen for the app switcher, and Safari and Chrome keep thumbnails of open tabs. Native apps such as Snapchat or Teams with Intune hide content first (on iOS by covering the window when the app becomes inactive, on Android with `FLAG_SECURE`). Web pages can't use either, so EzRedact covers the screen on the earliest events browsers provide. That works reliably on Android, where the page is told as soon as the recents screen opens. On iOS the page may only be told after the snapshot has been taken.
+- **Photo picker copies.** On iOS, picking a photo can make the system create a temporary copy for the browser. The system manages and clears it.
+- **Clipboard.** **Copy** leaves the redacted image on the clipboard, where clipboard-history keyboards or Universal Clipboard may keep or sync it.
+- **Swap.** Some Android phones (for example Samsung "RAM Plus") can move memory to storage when RAM runs low.
+- **Browser caching of the app itself.** Browsers cache EzRedact's own files (HTML, script, icons). Your images are never fetched from the network, so they never enter that cache.
+
+When you're done, close EzRedact from the app switcher.
 
 ## Tools
 

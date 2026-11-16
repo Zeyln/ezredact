@@ -669,8 +669,36 @@
     }
   });
 
+  // ---- Privacy shield ----
+  // Native apps (Snapchat, Teams with Intune) hide content before the OS takes
+  // its app-switcher snapshot: on iOS by covering the window when the app
+  // resigns active, on Android with FLAG_SECURE. A web page can't set either,
+  // so this covers the screen on the earliest events browsers give us:
+  // blur (focus lost: Safari tab switcher, dialogs, alt-tab) and
+  // visibilitychange (Android fires it as soon as the recents screen opens).
+  // On iOS the system snapshot may still be taken before this paints.
+  const root = document.documentElement;
+  function shield() {
+    root.classList.add('shielded');
+  }
+  function unshield() {
+    if (document.visibilityState === 'visible' && document.hasFocus()) root.classList.remove('shielded');
+  }
+  window.addEventListener('blur', shield);
+  window.addEventListener('focus', unshield);
+  document.addEventListener('visibilitychange', () => {
+    if (document.visibilityState === 'hidden') shield();
+    else unshield();
+  });
+  window.addEventListener('pageshow', unshield);
+  // Losing focus right after a tap (file picker, share sheet, confirm) is expected; the shield lifts on return.
+  el.stage.addEventListener('pointerdown', unshield);
+
   // ---- Leaving the page wipes everything ----
-  window.addEventListener('pagehide', wipe);
+  window.addEventListener('pagehide', () => {
+    shield();
+    wipe();
+  });
   // If the browser restores this page from its back/forward cache, start clean.
   window.addEventListener('pageshow', (e) => {
     if (e.persisted) wipe();
