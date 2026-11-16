@@ -35,6 +35,9 @@
     shareBtn: $('shareBtn'),
     saveBtn: $('saveBtn'),
     copyBtn: $('copyBtn'),
+    downloadBtn: $('downloadBtn'),
+    shareNote: $('shareNote'),
+    downloadNote: $('downloadNote'),
     closeExportBtn: $('closeExportBtn'),
     toast: $('toast'),
   };
@@ -555,12 +558,24 @@
     });
   }
 
+  // Neutral name: it says nothing about redaction if it shows up in a file list or history.
   function fileName() {
     const d = new Date();
     const pad = (n) => String(n).padStart(2, '0');
-    return `redacted-${d.getFullYear()}${pad(d.getMonth() + 1)}${pad(d.getDate())}-${pad(d.getHours())}${pad(d.getMinutes())}${pad(d.getSeconds())}.png`;
+    return `image-${d.getFullYear()}${pad(d.getMonth() + 1)}${pad(d.getDate())}-${pad(d.getHours())}${pad(d.getMinutes())}${pad(d.getSeconds())}.png`;
   }
 
+  /*
+   * Ways to get the image out, in order of preference. A plain <a download>
+   * is recorded in the browser's download history (file name, time, site), so
+   * it is only a last resort:
+   *  - Save As dialog (File System Access API, desktop Chrome/Edge): writes the
+   *    file directly, no download entry.
+   *  - Share sheet (phones): "Save Image" / "Save to Files", no download entry.
+   *  - Copy to clipboard.
+   *  - Download, with a warning about the history entry.
+   */
+  const canSavePicker = typeof window.showSaveFilePicker === 'function' && window.self === window.top;
   const canShareFiles = (() => {
     try {
       return !!navigator.canShare && navigator.canShare({ files: [new File([''], 'x.png', { type: 'image/png' })] });
@@ -569,9 +584,21 @@
     }
   })();
   const canCopy = !!(navigator.clipboard && navigator.clipboard.write && window.ClipboardItem);
+
+  el.saveBtn.hidden = !canSavePicker;
   el.shareBtn.hidden = !canShareFiles;
+  el.shareNote.hidden = !canShareFiles || canSavePicker;
   el.copyBtn.hidden = !canCopy;
-  if (!canShareFiles) el.saveBtn.classList.add('primary');
+  el.downloadBtn.hidden = canSavePicker;
+  el.downloadNote.hidden = canSavePicker;
+  if (canSavePicker) {
+    el.saveBtn.classList.add('primary');
+    el.shareBtn.classList.remove('primary');
+    el.shareBtn.textContent = 'Share…';
+  } else if (!canShareFiles) {
+    el.downloadBtn.classList.add('primary');
+  }
+  if (!canSavePicker && canShareFiles) el.downloadBtn.textContent = 'Download instead';
 
   el.exportBtn.addEventListener('click', () => {
     if (work) el.exportDialog.showModal();
@@ -593,11 +620,38 @@
       el.exportDialog.close();
     } catch (err) {
       if (err && err.name === 'AbortError') return;
-      toast('Sharing failed. Try Save instead.');
+      toast('Sharing failed. Try another option.');
     }
   });
 
   el.saveBtn.addEventListener('click', async () => {
+    let handle;
+    try {
+      // Open the dialog first, while the tap still counts as a user gesture.
+      handle = await window.showSaveFilePicker({
+        suggestedName: fileName(),
+        startIn: 'pictures',
+        types: [{ description: 'PNG image', accept: { 'image/png': ['.png'] } }],
+      });
+    } catch (err) {
+      if (err && err.name === 'AbortError') return;
+      toast('Could not open the save dialog.');
+      return;
+    }
+    try {
+      const blob = await exportBlob();
+      const writable = await handle.createWritable();
+      await writable.write(blob);
+      await writable.close();
+      unsaved = false;
+      el.exportDialog.close();
+      toast('Saved.');
+    } catch {
+      toast('Could not save the image.');
+    }
+  });
+
+  el.downloadBtn.addEventListener('click', async () => {
     try {
       const blob = await exportBlob();
       const url = URL.createObjectURL(blob);
@@ -625,7 +679,7 @@
       el.exportDialog.close();
       toast('Copied to clipboard.');
     } catch {
-      toast('Copy is not allowed here. Try Save instead.');
+      toast('Copy is not allowed here. Try another option.');
     }
   });
 

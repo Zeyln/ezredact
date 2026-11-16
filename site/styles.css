@@ -348,6 +348,8 @@ svg .fill { fill: currentColor; stroke: none; }
 .sheet h2 { margin: 0 0 6px; font-size: 19px; }
 .sheet p { margin: 0 0 16px; font-size: 14px; }
 .sheet-actions { display: flex; flex-direction: column; gap: 8px; }
+.sheet .note { margin: -2px 0 6px; color: var(--muted); font-size: 13px; }
+.sheet .note b { color: var(--text); font-weight: 600; }
 
 /* ---- Toast ---- */
 .toast {

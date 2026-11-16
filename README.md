@@ -24,6 +24,8 @@ EzRedact controls what the web page does, not what your phone or browser does ar
 
 - **App switcher previews and tab thumbnails.** iOS and Android save a screenshot of the screen for the app switcher, and Safari and Chrome keep thumbnails of open tabs. Native apps such as Snapchat or Teams with Intune hide content first (on iOS by covering the window when the app becomes inactive, on Android with `FLAG_SECURE`). Web pages can't use either, so EzRedact covers the screen on the earliest events browsers provide. That works reliably on Android, where the page is told as soon as the recents screen opens. On iOS the page may only be told after the snapshot has been taken.
 - **Photo picker copies.** On iOS, picking a photo can make the system create a temporary copy for the browser. The system manages and clears it.
+- **Download history.** If you use **Download**, the browser lists it in its download history until you clear it. The Save As dialog may also remember the last folder you saved to.
+- **Where you save it.** Saving to Photos or to a cloud-synced folder (iCloud, Google Photos, OneDrive) uploads the redacted image to that service.
 - **Clipboard.** **Copy** leaves the redacted image on the clipboard, where clipboard-history keyboards or Universal Clipboard may keep or sync it.
 - **Swap.** Some Android phones (for example Samsung "RAM Plus") can move memory to storage when RAM runs low.
 - **Browser caching of the app itself.** Browsers cache EzRedact's own files (HTML, script, icons). Your images are never fetched from the network, so they never enter that cache.
@@ -42,6 +44,19 @@ When you're done, close EzRedact from the app switcher.
 Pinch with two fingers to zoom and pan with any tool. Undo and redo cover every edit.
 
 On a computer you can also paste (Ctrl/⌘+V) or drag an image onto the page, zoom with the scroll wheel, and use the shortcuts `B` (Box), `P` (Pixelate), `D` (Brush), `M` (Move), `0` (fit), Ctrl/⌘+Z (undo) and Ctrl/⌘+Shift+Z or Ctrl+Y (redo).
+
+### Exporting
+
+EzRedact avoids ordinary browser downloads, because browsers record each one in their download history (file name, time and the site it came from).
+
+| Option | Where | Leaves a download-history entry? |
+| --- | --- | --- |
+| **Share or save…** → *Save Image* / *Save to Files* | Phones and tablets | No |
+| **Save to device…** (a normal Save As dialog) | Desktop Chrome and Edge | No |
+| **Copy to clipboard** | Most browsers | No, but see clipboard under [Limits](#limits) |
+| **Download** | Only offered when Save As isn't available, with a warning | **Yes** |
+
+Exported files get a neutral name like `image-20261116-093000.png`.
 
 ### Add to home screen
 

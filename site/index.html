@@ -64,6 +64,7 @@
           <li>App switcher previews and tab thumbnails. EzRedact covers the screen when it goes to the background, but on iPhone the preview can be taken first.</li>
           <li>A temporary copy of a photo you pick, made by the system photo picker.</li>
           <li>Clipboard history and synced clipboards (if you use Copy).</li>
+          <li>Download history (only if you use Download; Share and Save don't create one).</li>
           <li>On some Android phones, memory moved to storage when RAM runs low.</li>
         </ul>
         <p>To be safe, close EzRedact from the app switcher when you're done.</p>
@@ -123,9 +124,12 @@
     <h2>Export</h2>
     <p class="muted">Creates a flattened PNG. Covered pixels are permanently replaced and metadata is removed. This is the only time EzRedact itself writes anything to your device, and only the redacted image.</p>
     <div class="sheet-actions">
-      <button id="shareBtn" class="btn primary large" type="button" hidden>Share…</button>
-      <button id="saveBtn" class="btn large" type="button">Save to device</button>
+      <button id="shareBtn" class="btn primary large" type="button" hidden>Share or save…</button>
+      <p id="shareNote" class="note" hidden>To keep a copy, choose <b>Save Image</b> or <b>Save to Files</b> in the share menu.</p>
+      <button id="saveBtn" class="btn large" type="button" hidden>Save to device…</button>
       <button id="copyBtn" class="btn large" type="button" hidden>Copy to clipboard</button>
+      <button id="downloadBtn" class="btn large" type="button" hidden>Download</button>
+      <p id="downloadNote" class="note" hidden>Downloads are listed in your browser's download history (file name, time and this site). Clear that history afterwards if needed.</p>
       <button id="closeExportBtn" class="btn ghost large" type="button">Cancel</button>
     </div>
   </dialog>
