@@ -183,6 +183,9 @@ svg .fill { fill: currentColor; stroke: none; }
 .privacy li + li { margin-top: 8px; }
 .privacy li::before { content: "✓"; position: absolute; left: 0; color: var(--accent); font-weight: 700; }
 
+.tip { width: 100%; text-align: left; color: var(--muted); font-size: 13px; }
+.tip b { color: var(--accent); font-weight: 600; }
+
 .limits { width: 100%; text-align: left; color: var(--muted); font-size: 13px; }
 .limits summary { min-height: var(--tap); display: flex; align-items: center; justify-content: center; gap: 6px; cursor: pointer; color: var(--text); font-size: 14px; }
 .limits p { margin: 8px 0; }

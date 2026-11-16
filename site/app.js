@@ -558,11 +558,10 @@
     });
   }
 
-  // Neutral name: it says nothing about redaction if it shows up in a file list or history.
+  // Neutral, constant name: says nothing about redaction or when the export happened.
+  // The OS adds "(1)" etc. if the name is taken.
   function fileName() {
-    const d = new Date();
-    const pad = (n) => String(n).padStart(2, '0');
-    return `image-${d.getFullYear()}${pad(d.getMonth() + 1)}${pad(d.getDate())}-${pad(d.getHours())}${pad(d.getMinutes())}${pad(d.getSeconds())}.png`;
+    return 'image.png';
   }
 
   /*

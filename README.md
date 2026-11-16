@@ -56,7 +56,9 @@ EzRedact avoids ordinary browser downloads, because browsers record each one in 
 | **Copy to clipboard** | Most browsers | No, but see clipboard under [Limits](#limits) |
 | **Download** | Only offered when Save As isn't available, with a warning | **Yes** |
 
-Exported files get a neutral name like `image-20261116-093000.png`.
+Exported files are always named `image.png` (your device adds "(1)" and so on if needed), so the name reveals nothing about redaction or when you exported. The PNG contains only the image itself: no EXIF, location, camera, date, software or text metadata.
+
+**Check what's still visible.** On screenshots, also cover the status bar (clock, carrier, battery, signal) and any notifications: they can reveal when and where a screenshot was taken. The image keeps its original pixel size, which can hint at the device model.
 
 ### Add to home screen
 
