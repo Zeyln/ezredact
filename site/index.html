@@ -6,13 +6,13 @@
   <!-- No network access beyond loading the app's own files. Images never leave the device. -->
   <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self'; style-src 'self'; img-src 'self' blob:; manifest-src 'self'; base-uri 'none'; form-action 'none'">
   <meta name="referrer" content="no-referrer">
-  <meta name="theme-color" content="#111318">
-  <meta name="color-scheme" content="dark">
+  <meta name="theme-color" content="#fafafa" media="(prefers-color-scheme: light)">
+  <meta name="theme-color" content="#222222" media="(prefers-color-scheme: dark)">
+  <meta name="color-scheme" content="light dark">
   <meta name="mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-title" content="EzRedact">
-  <meta name="description" content="Redact screenshots and images on your device. Nothing is uploaded and nothing is stored.">
-  <title>EzRedact</title>
+  <meta name="apple-mobile-web-app-title" content="Image">
+  <title>Image</title>
   <link rel="icon" href="icons/icon.svg" type="image/svg+xml">
   <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
   <link rel="manifest" href="manifest.webmanifest">
@@ -21,23 +21,20 @@
 </head>
 <body>
   <header class="topbar">
-    <div class="brand">
-      <img src="icons/icon.svg" alt="" width="28" height="28">
-      <span class="brand-name">EzRedact</span>
-      <span class="badge" title="Alpha test build">alpha</span>
-    </div>
     <div class="actions">
       <button id="openBtn" class="btn" type="button" title="Open image" aria-label="Open image">
         <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="4" width="18" height="16" rx="2"/><circle cx="9" cy="10" r="2"/><path d="M21 17l-5-5-9 8"/></svg>
         <span class="btn-label">Open</span>
       </button>
-      <button id="wipeBtn" class="btn" type="button" title="Clear image and edits" aria-label="Clear" disabled>
-        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16M10 11v6M14 11v6M6 7l1 13h10l1-13M9 7V4h6v3"/></svg>
-        <span class="btn-label">Clear</span>
+    </div>
+    <div class="actions end">
+      <button id="wipeBtn" class="btn" type="button" title="Close" aria-label="Close" disabled>
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg>
+        <span class="btn-label">Close</span>
       </button>
-      <button id="exportBtn" class="btn primary" type="button" title="Save or share" aria-label="Export" disabled>
+      <button id="exportBtn" class="btn primary" type="button" title="Save" aria-label="Save" disabled>
         <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 15V3M7 8l5-5 5 5M5 13v7h14v-7"/></svg>
-        <span class="btn-label">Export</span>
+        <span class="btn-label">Save</span>
       </button>
     </div>
   </header>
@@ -47,19 +44,7 @@
 
     <section id="empty" class="empty">
       <div class="empty-inner">
-      <button id="emptyOpenBtn" class="btn primary large" type="button">Choose image</button>
-      <p class="muted small pointer-only">or paste or drop an image</p>
-      <details class="about">
-        <summary>About</summary>
-        <ul>
-          <li>The image stays on this device. There is no server.</li>
-          <li>Nothing is saved until you export. Switching to another app or tab, locking the screen or closing the page clears everything.</li>
-          <li>Exports are PNG files without metadata, named image.png.</li>
-          <li>Use Box for text. Pixelated text can sometimes be recovered.</li>
-          <li>On screenshots, also cover the status bar and notifications.</li>
-          <li>Your phone or browser may still keep app switcher previews, photo picker copies, clipboard history, or download history if you use Download.</li>
-        </ul>
-      </details>
+      <button id="emptyOpenBtn" class="btn large" type="button">Open image</button>
       </div>
     </section>
 
@@ -111,13 +96,12 @@
   <input id="fileInput" type="file" accept="image/*" hidden>
 
   <dialog id="exportDialog" class="sheet">
-    <h2>Export</h2>
-    <p class="muted">PNG without metadata.</p>
+    <h2>Save</h2>
     <div class="sheet-actions">
-      <button id="shareBtn" class="btn primary large" type="button" hidden>Share or save…</button>
+      <button id="shareBtn" class="btn primary large" type="button" hidden>Share…</button>
       <p id="shareNote" class="note" hidden>To keep a copy, choose Save Image or Save to Files.</p>
-      <button id="saveBtn" class="btn large" type="button" hidden>Save to device…</button>
-      <button id="copyBtn" class="btn large" type="button" hidden>Copy to clipboard</button>
+      <button id="saveBtn" class="btn large" type="button" hidden>Save as…</button>
+      <button id="copyBtn" class="btn large" type="button" hidden>Copy</button>
       <button id="downloadBtn" class="btn large" type="button" hidden>Download</button>
       <p id="downloadNote" class="note" hidden>Shows up in the browser's download history.</p>
       <button id="closeExportBtn" class="btn ghost large" type="button">Cancel</button>

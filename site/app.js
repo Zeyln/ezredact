@@ -536,9 +536,8 @@
   el.fileInput.addEventListener('change', () => loadFile(el.fileInput.files[0]));
 
   el.wipeBtn.addEventListener('click', () => {
-    if (unsaved && !confirm('Clear image and edits?')) return;
+    if (unsaved && !confirm('Close image?')) return;
     wipe();
-    toast('Cleared.');
   });
 
   // ---- Export ----
