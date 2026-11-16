@@ -27,7 +27,6 @@
     undoBtn: $('undoBtn'),
     redoBtn: $('redoBtn'),
     fitBtn: $('fitBtn'),
-    hint: $('hint'),
     colorRow: $('colorRow'),
     sizeRow: $('sizeRow'),
     sizeInput: $('sizeInput'),
@@ -43,13 +42,6 @@
   };
   const toolButtons = [...document.querySelectorAll('[data-tool]')];
   const colorButtons = [...document.querySelectorAll('[data-color]')];
-
-  const HINTS = {
-    box: 'Drag to cover. Safest for text.',
-    pixelate: 'For faces. Use Box for text.',
-    brush: 'Paint over areas.',
-    move: 'Drag to pan. Pinch to zoom.',
-  };
 
   // ---- State (memory only) ----
   let base = null; // original pixels
@@ -114,7 +106,7 @@
   // ---- Loading ----
   async function loadFile(file) {
     if (!file || !file.type.startsWith('image/')) {
-      toast('That file is not an image.');
+      toast('Not an image.');
       return;
     }
     const url = URL.createObjectURL(file);
@@ -138,9 +130,9 @@
       workCtx = work.getContext('2d');
       workCtx.drawImage(base, 0, 0);
       showEditor();
-      if (scaled) toast(`Large image reduced to ${w} × ${h} to fit in memory.`);
+      if (scaled) toast(`Scaled down to ${w} × ${h}.`);
     } catch {
-      toast('Could not open this image. Try a PNG or JPEG.');
+      toast('Could not open image.');
     } finally {
       img.removeAttribute('src');
       URL.revokeObjectURL(url);
@@ -337,7 +329,7 @@
         ctx.save();
         ctx.lineWidth = 1.5 / view.s;
         ctx.setLineDash([6 / view.s, 4 / view.s]);
-        ctx.strokeStyle = '#ffcc33';
+        ctx.strokeStyle = '#8a9099';
         ctx.strokeRect(op.x, op.y, op.w, op.h);
         ctx.restore();
       }
@@ -509,8 +501,6 @@
     tool = t;
     for (const b of toolButtons) b.setAttribute('aria-checked', String(b.dataset.tool === t));
     el.canvas.dataset.tool = t;
-    el.hint.textContent = HINTS[t];
-    el.hint.classList.toggle('warn', t === 'pixelate');
     el.colorRow.hidden = !(t === 'box' || t === 'brush');
     el.sizeRow.hidden = t !== 'brush';
   }
@@ -539,16 +529,16 @@
 
   const openPicker = () => el.fileInput.click();
   el.openBtn.addEventListener('click', () => {
-    if (unsaved && !confirm('Open a new image? Unsaved edits to this one will be lost.')) return;
+    if (unsaved && !confirm('Discard current edits?')) return;
     openPicker();
   });
   el.emptyOpenBtn.addEventListener('click', openPicker);
   el.fileInput.addEventListener('change', () => loadFile(el.fileInput.files[0]));
 
   el.wipeBtn.addEventListener('click', () => {
-    if (unsaved && !confirm('Wipe this image and all edits? This cannot be undone.')) return;
+    if (unsaved && !confirm('Clear image and edits?')) return;
     wipe();
-    toast('Wiped. Nothing remains in this page.');
+    toast('Cleared.');
   });
 
   // ---- Export ----
@@ -619,7 +609,7 @@
       el.exportDialog.close();
     } catch (err) {
       if (err && err.name === 'AbortError') return;
-      toast('Sharing failed. Try another option.');
+      toast('Sharing failed.');
     }
   });
 
@@ -634,7 +624,7 @@
       });
     } catch (err) {
       if (err && err.name === 'AbortError') return;
-      toast('Could not open the save dialog.');
+      toast('Could not save.');
       return;
     }
     try {
@@ -646,7 +636,7 @@
       el.exportDialog.close();
       toast('Saved.');
     } catch {
-      toast('Could not save the image.');
+      toast('Could not save.');
     }
   });
 
@@ -666,7 +656,7 @@
       unsaved = false;
       el.exportDialog.close();
     } catch {
-      toast('Could not save the image.');
+      toast('Could not save.');
     }
   });
 
@@ -676,9 +666,9 @@
       await navigator.clipboard.write([new ClipboardItem({ 'image/png': exportBlob() })]);
       unsaved = false;
       el.exportDialog.close();
-      toast('Copied to clipboard.');
+      toast('Copied.');
     } catch {
-      toast('Copy is not allowed here. Try another option.');
+      toast('Copy failed.');
     }
   });
 
@@ -687,7 +677,7 @@
     const file = [...(e.clipboardData?.files || [])].find((f) => f.type.startsWith('image/'));
     if (!file) return;
     e.preventDefault();
-    if (unsaved && !confirm('Replace the current image? Unsaved edits will be lost.')) return;
+    if (unsaved && !confirm('Discard current edits?')) return;
     loadFile(file);
   });
 
@@ -709,7 +699,7 @@
     el.dropOverlay.hidden = true;
     const file = [...(e.dataTransfer?.files || [])].find((f) => f.type.startsWith('image/'));
     if (!file) return;
-    if (unsaved && !confirm('Replace the current image? Unsaved edits will be lost.')) return;
+    if (unsaved && !confirm('Discard current edits?')) return;
     loadFile(file);
   });
 

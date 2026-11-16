@@ -24,16 +24,16 @@
     <div class="brand">
       <img src="icons/icon.svg" alt="" width="28" height="28">
       <span class="brand-name">EzRedact</span>
-      <span class="badge" title="Alpha test build v0.1.0-alpha.1">Alpha</span>
+      <span class="badge" title="Alpha test build">alpha</span>
     </div>
     <div class="actions">
       <button id="openBtn" class="btn" type="button" title="Open image" aria-label="Open image">
         <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="4" width="18" height="16" rx="2"/><circle cx="9" cy="10" r="2"/><path d="M21 17l-5-5-9 8"/></svg>
         <span class="btn-label">Open</span>
       </button>
-      <button id="wipeBtn" class="btn" type="button" title="Wipe image and all edits" aria-label="Wipe" disabled>
+      <button id="wipeBtn" class="btn" type="button" title="Clear image and edits" aria-label="Clear" disabled>
         <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16M10 11v6M14 11v6M6 7l1 13h10l1-13M9 7V4h6v3"/></svg>
-        <span class="btn-label">Wipe</span>
+        <span class="btn-label">Clear</span>
       </button>
       <button id="exportBtn" class="btn primary" type="button" title="Save or share" aria-label="Export" disabled>
         <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 15V3M7 8l5-5 5 5M5 13v7h14v-7"/></svg>
@@ -47,37 +47,26 @@
 
     <section id="empty" class="empty">
       <div class="empty-inner">
-      <h1>Redact images privately</h1>
-      <p>Pick a screenshot or photo, cover what you need to hide, then save or share the result.</p>
       <button id="emptyOpenBtn" class="btn primary large" type="button">Choose image</button>
-      <p class="muted pointer-only">or paste or drop an image here</p>
-      <ul class="privacy">
-        <li>Your image never leaves this device. There is no server.</li>
-        <li>EzRedact saves nothing to your device until you choose to save or share the edited image.</li>
-        <li>Leaving or closing the page wipes everything else.</li>
-        <li>Exported images contain no metadata (location, camera, date) and are simply named image.png.</li>
-      </ul>
-      <p class="tip"><b>Tip:</b> on screenshots, also cover the status bar (clock, carrier, battery) and any notifications. They can reveal when and where it was taken.</p>
-      <details class="limits">
-        <summary>What your phone might still keep</summary>
-        <p>EzRedact can't control your phone or browser. They may keep:</p>
+      <p class="muted small pointer-only">or paste or drop an image</p>
+      <details class="about">
+        <summary>About</summary>
         <ul>
-          <li>App switcher previews and tab thumbnails. EzRedact covers the screen when it goes to the background, but on iPhone the preview can be taken first.</li>
-          <li>A temporary copy of a photo you pick, made by the system photo picker.</li>
-          <li>Clipboard history and synced clipboards (if you use Copy).</li>
-          <li>Download history (only if you use Download; Share and Save don't create one).</li>
-          <li>On some Android phones, memory moved to storage when RAM runs low.</li>
+          <li>The image stays on this device. There is no server.</li>
+          <li>Nothing is saved until you export. Closing the page clears everything.</li>
+          <li>Exports are PNG files without metadata, named image.png.</li>
+          <li>Use Box for text. Pixelated text can sometimes be recovered.</li>
+          <li>On screenshots, also cover the status bar and notifications.</li>
+          <li>Your phone or browser may still keep app switcher previews, photo picker copies, clipboard history, or download history if you use Download.</li>
         </ul>
-        <p>To be safe, close EzRedact from the app switcher when you're done.</p>
       </details>
       </div>
     </section>
 
-    <div id="dropOverlay" class="drop-overlay" hidden>Drop image to open</div>
+    <div id="dropOverlay" class="drop-overlay" hidden>Drop image</div>
   </main>
 
   <footer id="toolbar" class="toolbar" hidden>
-    <p id="hint" class="hint"></p>
     <div class="options">
       <div id="colorRow" class="row" role="radiogroup" aria-label="Fill color">
         <button class="swatch" type="button" role="radio" aria-checked="true" data-color="#000000" title="Black"><span class="chip black"></span></button>
@@ -100,19 +89,19 @@
       </div>
     </div>
     <div class="tools" role="radiogroup" aria-label="Tool">
-      <button class="tool" type="button" role="radio" aria-checked="true" data-tool="box">
+      <button class="tool" type="button" role="radio" aria-checked="true" data-tool="box" title="Box: solid cover, safest for text">
         <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="8" width="18" height="8" rx="1" class="fill"/></svg>
         <span>Box</span>
       </button>
-      <button class="tool" type="button" role="radio" aria-checked="false" data-tool="pixelate">
+      <button class="tool" type="button" role="radio" aria-checked="false" data-tool="pixelate" title="Pixelate: for faces and photos, not text">
         <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="3" width="6" height="6" class="fill"/><rect x="15" y="3" width="6" height="6" class="fill"/><rect x="9" y="9" width="6" height="6" class="fill"/><rect x="3" y="15" width="6" height="6" class="fill"/><rect x="15" y="15" width="6" height="6" class="fill"/></svg>
         <span>Pixelate</span>
       </button>
-      <button class="tool" type="button" role="radio" aria-checked="false" data-tool="brush">
+      <button class="tool" type="button" role="radio" aria-checked="false" data-tool="brush" title="Brush: paint a solid color">
         <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20l1-4L16 5l3 3L8 19z"/></svg>
         <span>Brush</span>
       </button>
-      <button class="tool" type="button" role="radio" aria-checked="false" data-tool="move">
+      <button class="tool" type="button" role="radio" aria-checked="false" data-tool="move" title="Move: drag to pan, pinch or scroll to zoom">
         <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v18M3 12h18M9 6l3-3 3 3M9 18l3 3 3-3M6 9l-3 3 3 3M18 9l3 3-3 3"/></svg>
         <span>Move</span>
       </button>
@@ -123,14 +112,14 @@
 
   <dialog id="exportDialog" class="sheet">
     <h2>Export</h2>
-    <p class="muted">Creates a flattened PNG. Covered pixels are permanently replaced and metadata is removed. This is the only time EzRedact itself writes anything to your device, and only the redacted image.</p>
+    <p class="muted">PNG without metadata.</p>
     <div class="sheet-actions">
       <button id="shareBtn" class="btn primary large" type="button" hidden>Share or save…</button>
-      <p id="shareNote" class="note" hidden>To keep a copy, choose <b>Save Image</b> or <b>Save to Files</b> in the share menu.</p>
+      <p id="shareNote" class="note" hidden>To keep a copy, choose Save Image or Save to Files.</p>
       <button id="saveBtn" class="btn large" type="button" hidden>Save to device…</button>
       <button id="copyBtn" class="btn large" type="button" hidden>Copy to clipboard</button>
       <button id="downloadBtn" class="btn large" type="button" hidden>Download</button>
-      <p id="downloadNote" class="note" hidden>Downloads are listed in your browser's download history (file name, time and this site). Clear that history afterwards if needed.</p>
+      <p id="downloadNote" class="note" hidden>Shows up in the browser's download history.</p>
       <button id="closeExportBtn" class="btn ghost large" type="button">Cancel</button>
     </div>
   </dialog>
@@ -139,9 +128,6 @@
 
   <!-- Covers the screen whenever the page loses focus or goes to the background,
        so app-switcher snapshots and tab thumbnails are less likely to show the image. -->
-  <div id="shield" class="shield" aria-hidden="true">
-    <img src="icons/icon.svg" alt="" width="64" height="64">
-    <p>Hidden for privacy</p>
-  </div>
+  <div id="shield" class="shield" aria-hidden="true"></div>
 </body>
 </html>

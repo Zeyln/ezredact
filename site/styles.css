@@ -5,7 +5,7 @@
   --border: #343945;
   --text: #f1f3f6;
   --muted: #9aa1ad;
-  --accent: #ffcc33;
+  --accent: #cfd4db;
   --accent-text: #15171c;
   --radius: 12px;
   --tap: 44px; /* minimum touch target */
@@ -74,20 +74,10 @@ svg .fill { fill: currentColor; stroke: none; }
   background: var(--surface);
   border-bottom: 1px solid var(--border);
 }
-.brand { display: flex; align-items: center; gap: 8px; min-width: 0; font-weight: 700; font-size: 17px; }
+.brand { display: flex; align-items: center; gap: 8px; min-width: 0; font-weight: 600; font-size: 16px; }
 .brand img { flex: none; border-radius: 7px; }
 .brand-name { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.badge {
-  flex: none;
-  padding: 1px 6px;
-  border: 1px solid var(--accent);
-  border-radius: 6px;
-  color: var(--accent);
-  font-size: 11px;
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 0.04em;
-}
+.badge { flex: none; color: var(--muted); font-size: 12px; font-weight: 400; }
 .actions { display: flex; flex: none; gap: 6px; }
 
 .btn {
@@ -164,33 +154,13 @@ svg .fill { fill: currentColor; stroke: none; }
   gap: 12px;
   text-align: center;
 }
-.empty h1 { margin: 0; font-size: clamp(21px, 6vw, 28px); line-height: 1.2; }
 .empty p { margin: 0; }
 .muted { color: var(--muted); }
-.privacy {
-  list-style: none;
-  width: 100%;
-  margin: 12px 0 0;
-  padding: 16px;
-  text-align: left;
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  background: var(--surface);
-  color: var(--muted);
-  font-size: 14px;
-}
-.privacy li { position: relative; padding-left: 22px; }
-.privacy li + li { margin-top: 8px; }
-.privacy li::before { content: "✓"; position: absolute; left: 0; color: var(--accent); font-weight: 700; }
-
-.tip { width: 100%; text-align: left; color: var(--muted); font-size: 13px; }
-.tip b { color: var(--accent); font-weight: 600; }
-
-.limits { width: 100%; text-align: left; color: var(--muted); font-size: 13px; }
-.limits summary { min-height: var(--tap); display: flex; align-items: center; justify-content: center; gap: 6px; cursor: pointer; color: var(--text); font-size: 14px; }
-.limits p { margin: 8px 0; }
-.limits ul { margin: 0; padding-left: 18px; }
-.limits li + li { margin-top: 4px; }
+.small { font-size: 13px; }
+.about { width: 100%; margin-top: 16px; color: var(--muted); font-size: 13px; }
+.about summary { min-height: var(--tap); display: flex; align-items: center; justify-content: center; cursor: pointer; }
+.about ul { margin: 4px 0 0; padding-left: 18px; text-align: left; }
+.about li + li { margin-top: 6px; }
 
 @media (pointer: coarse) { .pointer-only { display: none; } }
 
@@ -199,11 +169,10 @@ svg .fill { fill: currentColor; stroke: none; }
   inset: 12px;
   display: grid;
   place-items: center;
-  border: 2px dashed var(--accent);
+  border: 2px dashed var(--muted);
   border-radius: var(--radius);
   background: rgba(17, 19, 24, 0.85);
-  font-size: 18px;
-  font-weight: 600;
+  color: var(--muted);
   pointer-events: none;
 }
 
@@ -224,20 +193,11 @@ svg .fill { fill: currentColor; stroke: none; }
 /* On tablets in portrait, keep the controls a comfortable width instead of stretching. */
 .toolbar > * { width: 100%; max-width: 640px; margin-inline: auto; }
 
-.hint {
-  margin-block: 0;
-  color: var(--muted);
-  font-size: 13px;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-.hint.warn { color: var(--accent); }
 
 .options { display: flex; align-items: center; gap: 8px; min-width: 0; }
 .row { display: flex; align-items: center; gap: 6px; min-width: 0; }
 .size { flex: 1; color: var(--muted); font-size: 14px; }
-.size input { flex: 1; min-width: 60px; height: var(--tap); margin: 0; accent-color: var(--accent); }
+.size input { flex: 1; min-width: 60px; height: var(--tap); margin: 0; accent-color: var(--muted); }
 .history { display: flex; flex: none; gap: 4px; margin-left: auto; }
 
 .icon-btn {
@@ -264,7 +224,7 @@ svg .fill { fill: currentColor; stroke: none; }
   background: none;
   cursor: pointer;
 }
-.swatch[aria-checked="true"] { border-color: var(--accent); }
+.swatch[aria-checked="true"] { border-color: var(--muted); }
 .chip { width: 28px; height: 28px; border-radius: 50%; border: 1px solid var(--border); }
 .chip.black { background: #000; }
 .chip.white { background: #fff; }
@@ -287,7 +247,8 @@ svg .fill { fill: currentColor; stroke: none; }
   touch-action: manipulation;
 }
 .tool span { max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.tool[aria-checked="true"] { border-color: var(--accent); color: var(--accent); }
+.tool { color: var(--muted); }
+.tool[aria-checked="true"] { background: #353a45; border-color: var(--border); color: var(--text); }
 
 /* Short portrait screens (e.g. iPhone SE): tighter toolbar, more room for the image. */
 @media (orientation: portrait) and (max-height: 700px) {
@@ -324,7 +285,6 @@ svg .fill { fill: currentColor; stroke: none; }
   .size { flex-basis: 100%; }
   .history { flex-basis: 100%; margin-left: 0; }
   .history .icon-btn { flex: 1; }
-  .hint { order: 3; white-space: normal; }
 }
 
 /* Landscape phones: compact header and a narrower panel. */
@@ -352,7 +312,6 @@ svg .fill { fill: currentColor; stroke: none; }
 .sheet p { margin: 0 0 16px; font-size: 14px; }
 .sheet-actions { display: flex; flex-direction: column; gap: 8px; }
 .sheet .note { margin: -2px 0 6px; color: var(--muted); font-size: 13px; }
-.sheet .note b { color: var(--text); font-weight: 600; }
 
 /* ---- Toast ---- */
 .toast {
@@ -381,15 +340,8 @@ svg .fill { fill: currentColor; stroke: none; }
   inset: 0;
   z-index: 1000;
   display: none;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 12px;
   background: var(--bg);
-  color: var(--muted);
-  font-size: 15px;
 }
-.shield img { border-radius: 14px; }
-html.shielded .shield { display: flex; }
+html.shielded .shield { display: block; }
 html.shielded #canvas,
 html.shielded .sheet { visibility: hidden; }
