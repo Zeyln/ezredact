@@ -10,7 +10,7 @@ Open an image, cover what you need to hide, then share or save the result. It ru
 
 ## Discreet by design
 
-The interface is deliberately plain so it does not draw attention from people nearby: a generic name ("Image") and icon, the system light/dark look, no headlines or explanatory text, and a blank screen when the app is in the background.
+The editing screen is deliberately plain so it does not draw attention from people nearby: a generic name ("Image") and icon, the system light/dark look, no headlines or explanatory text, and a blank screen when the app is in the background. A separate About page, linked from the start screen, explains what the site is and how it handles images.
 
 ## Privacy by design
 
@@ -20,7 +20,16 @@ The interface is deliberately plain so it does not draw attention from people ne
 - **Cleared when you leave.** As soon as the page goes to the background (switching app or tab, going to the home screen, locking the screen) or is closed or reloaded, the image, the edit history and any temporary download links are cleared. Save first if you want to keep the result. The **Close** button does the same at any time.
 - **Clean exports.** Exports are re-encoded PNGs. Redacted pixels are permanently replaced, and metadata such as EXIF location and camera details is not carried over.
 - **Privacy shield.** The screen is covered whenever the page loses focus or goes to the background, so app-switcher previews and tab thumbnails are less likely to show your image.
-- **No third-party code.** There are no dependencies, frameworks or CDNs. Everything that runs is in [`site/`](site/).
+- **Nothing loaded from elsewhere.** There are no frameworks or CDNs. Everything that runs is in [`site/`](site/). The only third-party code is the optional text finder below, which is also served from `site/`.
+
+## Finding text (beta)
+
+**Find text** in the toolbar looks for text in the image and outlines it, so you can cover it in one step. It is opt-in: the first use in a visit asks before downloading about 56 MB (a text detection model and its runtime), all served from this site.
+
+- Everything runs in the browser. The image is not uploaded. The page itself still makes no network requests; the download happens in a background worker.
+- Found text is shown as outlines. Tap an outline to skip it, then **Cover**. Covers are ordinary solid fills, so Undo and Save work as usual. If the selection would cover more than 40% of the image, you are asked first.
+- It is a helper, not a guarantee. It can miss text, especially small text in photos. Always check the image before sharing.
+- Components: [ONNX Runtime Web](https://github.com/microsoft/onnxruntime) (MIT) and the [CRAFT](https://github.com/clovaai/CRAFT-pytorch) text detector (MIT, weights via EasyOCR, Apache 2.0). See [`site/find/THIRD-PARTY-NOTICES.txt`](site/find/THIRD-PARTY-NOTICES.txt).
 
 ## Limits
 

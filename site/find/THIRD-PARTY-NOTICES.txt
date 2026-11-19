@@ -1,0 +1,35 @@
+Optional text finding (beta) uses the following third-party components.
+They are served from this site and run in your browser. Nothing is uploaded.
+
+1. ONNX Runtime Web 1.31.1 (ort/)
+   https://github.com/microsoft/onnxruntime
+   MIT License, Copyright (c) Microsoft Corporation.
+
+2. CRAFT text detection model, craft_mlt_25k (craft.fp16.onnx)
+   Code: https://github.com/clovaai/CRAFT-pytorch
+   MIT License, Copyright (c) 2019-present NAVER Corp.
+   Weights as redistributed by EasyOCR (https://github.com/JaidedAI/EasyOCR, Apache License 2.0).
+   ONNX fp16 conversion: https://huggingface.co/hon-lu/craft-mlt-25k-onnx-fp16 (MIT License),
+   sha256 36acd499de472a1573f285c4769b0e864311e2e7b336d6910ca5535da84378ff.
+
+MIT License text (applies to items 1 and 2 as stated above):
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+
+Apache License 2.0: https://www.apache.org/licenses/LICENSE-2.0

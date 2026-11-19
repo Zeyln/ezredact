@@ -22,6 +22,7 @@
     fileInput: $('fileInput'),
     openBtn: $('openBtn'),
     emptyOpenBtn: $('emptyOpenBtn'),
+    leaveNote: $('leaveNote'),
     wipeBtn: $('wipeBtn'),
     exportBtn: $('exportBtn'),
     undoBtn: $('undoBtn'),
@@ -140,7 +141,18 @@
     }
   }
 
+  // Generic on purpose: browsers can keep page titles in their history.
+  // Narrow hooks for the optional text finder in find/: read the image and view, add edits.
+  window.__dev = { work: () => work, view: () => view, color: () => color, commit, render: requestRender, ops: () => ops.length };
+
+  function updateTitle() {
+    const status = !work ? 'Ready' : el.exportDialog.open ? 'Saving' : 'Editing';
+    document.title = `Nyktios - ${status}`;
+  }
+
   function showEditor() {
+    updateTitle();
+    el.leaveNote.hidden = false;
     el.empty.hidden = true;
     el.canvas.hidden = false;
     el.toolbar.hidden = false;
@@ -155,6 +167,8 @@
 
   // ---- Wipe ----
   function wipe() {
+    // Lets the optional text finder (find/) drop its own state together with the image.
+    if (window.__devOnWipe) window.__devOnWipe();
     draft = null;
     pan = null;
     pinch = null;
@@ -175,6 +189,8 @@
     el.canvas.hidden = true;
     el.toolbar.hidden = true;
     el.empty.hidden = false;
+    el.leaveNote.hidden = true;
+    updateTitle();
     updateUi();
   }
 
@@ -193,6 +209,17 @@
 
   // Draws op onto ctx (in image coordinates), reading pixels from src.
   function applyOp(ctx, op, src) {
+    // Filled four-sided shape (from the text finder): same solid colour as a box.
+    if (op.type === 'poly') {
+      ctx.save();
+      ctx.fillStyle = op.color;
+      ctx.beginPath();
+      for (let i = 0; i < op.points.length; i += 2) ctx.lineTo(op.points[i], op.points[i + 1]);
+      ctx.closePath();
+      ctx.fill();
+      ctx.restore();
+      return;
+    }
     ctx.save();
     if (op.type === 'rect') {
       if (op.w <= 0 || op.h <= 0) {
@@ -598,6 +625,8 @@
   el.exportBtn.addEventListener('click', () => {
     if (work) el.exportDialog.showModal();
   });
+  // Covers every way the dialog opens or closes, including the Esc key.
+  new MutationObserver(updateTitle).observe(el.exportDialog, { attributes: true, attributeFilter: ['open'] });
   el.closeExportBtn.addEventListener('click', () => el.exportDialog.close());
   el.exportDialog.addEventListener('click', (e) => {
     // Close on a backdrop tap (outside the dialog box, not on its padding).

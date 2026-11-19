@@ -89,6 +89,15 @@ svg .fill { fill: currentColor; stroke: none; }
 }
 .actions { display: flex; flex: none; gap: 6px; }
 .actions.end { margin-left: auto; }
+.leave-note {
+  flex: 1;
+  min-width: 0;
+  margin: 0;
+  color: var(--muted);
+  font-size: 12px;
+  line-height: 1.2;
+  text-align: center;
+}
 
 .btn {
   display: inline-flex;
@@ -162,6 +171,17 @@ svg .fill { fill: currentColor; stroke: none; }
   text-align: center;
 }
 .empty p { margin: 0; }
+.quiet-link {
+  display: inline-flex;
+  align-items: center;
+  min-height: var(--tap);
+  padding: 0 12px;
+  color: var(--muted);
+  font-size: 13px;
+  text-decoration: none;
+}
+.quiet-link:hover { text-decoration: underline; }
+.quiet-link:focus-visible { outline: 2px solid var(--muted); outline-offset: 2px; }
 .muted { color: var(--muted); }
 .small { font-size: 13px; }
 .drop-overlay {
@@ -345,3 +365,24 @@ svg .fill { fill: currentColor; stroke: none; }
 html.shielded .shield { display: block; }
 html.shielded #canvas,
 html.shielded .sheet { visibility: hidden; }
+
+/* ---- About page ---- */
+body.page {
+  display: block;
+  height: auto;
+  min-height: 100vh;
+  min-height: 100dvh;
+  overflow: visible;
+}
+.page-content {
+  max-width: 640px;
+  margin: 0 auto;
+  padding: max(24px, env(safe-area-inset-top)) max(16px, env(safe-area-inset-right)) max(40px, env(safe-area-inset-bottom)) max(16px, env(safe-area-inset-left));
+  overflow-wrap: anywhere;
+}
+.page-content h1 { margin: 24px 0 8px; font-size: 24px; line-height: 1.25; font-weight: 600; }
+.page-content h2 { margin: 28px 0 6px; font-size: 16px; font-weight: 600; }
+.page-content p, .page-content ul { margin: 0 0 10px; }
+.page-content ul { padding-left: 20px; }
+.page-content li { margin-bottom: 6px; }
+.page-content a { color: inherit; }

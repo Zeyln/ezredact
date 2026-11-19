@@ -12,12 +12,18 @@
   <meta name="mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-title" content="Image">
-  <title>Image</title>
+  <meta name="description" content="Nyktios is a free image editor that runs in your browser. Cover or pixelate parts of a screenshot or photo, then save it. Images are not uploaded.">
+  <title>Nyktios - Ready</title>
   <link rel="icon" href="icons/icon.svg" type="image/svg+xml">
   <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
   <link rel="manifest" href="manifest.webmanifest">
   <link rel="stylesheet" href="styles.css">
   <script src="app.js" defer></script>
+  <!-- Optional text finding (beta): only loads its model after the user agrees. -->
+  <script src="find/viz.js" defer></script>
+  <script src="find/engine.js" defer></script>
+  <script src="find/plans.js" defer></script>
+  <script src="find/simple.js" defer></script>
 </head>
 <body>
   <header class="topbar">
@@ -27,6 +33,7 @@
         <span class="btn-label">Open</span>
       </button>
     </div>
+    <p id="leaveNote" class="leave-note" role="note" hidden>Leaving this page or browser clears everything.</p>
     <div class="actions end">
       <button id="wipeBtn" class="btn" type="button" title="Close" aria-label="Close" disabled>
         <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg>
@@ -45,6 +52,7 @@
     <section id="empty" class="empty">
       <div class="empty-inner">
       <button id="emptyOpenBtn" class="btn large" type="button">Open image</button>
+      <a class="quiet-link" href="about.html">About</a>
       </div>
     </section>
 

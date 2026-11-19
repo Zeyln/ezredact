@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'self'; img-src 'self'; base-uri 'none'; form-action 'none'">
+  <meta name="referrer" content="no-referrer">
+  <meta name="theme-color" content="#fafafa" media="(prefers-color-scheme: light)">
+  <meta name="theme-color" content="#222222" media="(prefers-color-scheme: dark)">
+  <meta name="color-scheme" content="light dark">
+  <meta name="description" content="About Nyktios, a free image editor that runs in your browser. Images are not uploaded.">
+  <title>Nyktios - About</title>
+  <link rel="icon" href="icons/icon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body class="page">
+  <main class="page-content">
+    <p><a href="./">Back to the editor</a></p>
+
+    <h1>About Nyktios</h1>
+    <p>Nyktios is a free image editor for covering or pixelating parts of a screenshot or photo. It works on phones and computers, with no account.</p>
+
+    <h2>How your images are handled</h2>
+    <ul>
+      <li>Images are opened and edited in your browser. They are not uploaded.</li>
+      <li>The site has no backend, analytics or cookies, and loads nothing from other websites.</li>
+      <li>The open image and your edits are cleared when you close the page or switch away from it.</li>
+      <li>Saved images are new PNG files without metadata such as location or camera details.</li>
+    </ul>
+
+    <h2>Finding text (beta)</h2>
+    <p>The optional Find text button looks for text in your image so you can cover it in one step. It needs a download of about 56 MB, and asks before starting. The download comes from this site and contains a text detection model (CRAFT) and ONNX Runtime Web, which run on your device. Your image is not uploaded. It can miss text, especially small text in photos, so check the image before sharing it. See the <a href="find/THIRD-PARTY-NOTICES.txt">third-party notices</a>.</p>
+
+    <h2>Hosting</h2>
+    <p>The site is hosted on GitHub Pages. GitHub logs visitors' IP addresses for security purposes. See the <a href="https://docs.github.com/en/pages/getting-started-with-github-pages/what-is-github-pages#data-collection" rel="noopener">GitHub Pages documentation</a>.</p>
+
+    <h2>Limits</h2>
+    <ul>
+      <li>Your phone or browser may keep its own traces, such as app-switcher previews or download history.</li>
+      <li>Use solid boxes for text. Pixelated text can sometimes be reconstructed.</li>
+      <li>Nyktios is an early test version, so check saved images before sharing them.</li>
+    </ul>
+
+    <h2>Source and contact</h2>
+    <p>The <a href="https://github.com/Zeyln/img" rel="noopener">source code is public</a>. Report problems or ask questions through <a href="https://github.com/Zeyln/img/issues" rel="noopener">GitHub Issues</a>.</p>
+  </main>
+</body>
+</html>
